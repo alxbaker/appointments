@@ -1,3 +1,5 @@
 .idea
 out
 *.iml
+/lib/mysql-connector-java-8.0.21.jar
+/lib/protobuf-java-3.11.4.jar

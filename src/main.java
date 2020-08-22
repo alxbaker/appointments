@@ -1,8 +1,11 @@
+import dao.dbConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.sql.Connection;
 
 public class main extends Application {
 
@@ -18,7 +21,13 @@ public class main extends Application {
 
 
     public static void main(String[] args) {
+        //open database connection
+        Connection conn = dbConnection.openConnection();
 
         launch(args);
+
+        //close database connection
+        dbConnection.closeConnection();
+
     }
 }

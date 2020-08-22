@@ -1,10 +1,12 @@
 package controller;
 
+import dao.dbConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import util.manageScenes;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class mainController {
 
