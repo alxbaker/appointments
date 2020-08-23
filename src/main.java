@@ -1,4 +1,5 @@
-import dao.dbConnection;
+import dao.DBCity;
+import dao.DBConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,8 +11,14 @@ import java.sql.Connection;
 public class main extends Application {
 
     @Override
+    public void init() {
+        //open database connection
+        Connection conn = DBConnection.openConnection();
+
+    }
+
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
         primaryStage.setTitle("Scheduling Assistant");
         primaryStage.setScene(new Scene(root));
         primaryStage.setMinWidth(600);
@@ -19,15 +26,12 @@ public class main extends Application {
         primaryStage.show();
     }
 
+    public void stop(){
+        //close database connection
+        DBConnection.closeConnection();
+    }
 
     public static void main(String[] args) {
-        //open database connection
-        Connection conn = dbConnection.openConnection();
-
         launch(args);
-
-        //close database connection
-        dbConnection.closeConnection();
-
     }
 }
