@@ -1,4 +1,3 @@
-import dao.DBCity;
 import dao.DBConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

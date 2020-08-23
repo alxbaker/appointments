@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBCustomer {
-    private final static String selectStatement = "select * from customer";
+    private final static String selectStatement = "SELECT * FROM customer CROSS JOIN address, city WHERE (customer.addressId = address.addressId) AND (address.cityId = city.cityId);";
     private final static Connection conn = DBConnection.getConnection();
 
     public static void getAllCustomers() throws SQLException {
@@ -23,18 +23,14 @@ public class DBCustomer {
             while (rs.next()) {
                 //get address information
                 int addressId = rs.getInt("addressId");
-                ResultSet address = DBAddress.getAddress(addressId);
-                address.next();
-                String address1 = address.getString("address");
-                String address2 = address.getString("address2");
-                String postalCode = address.getString("postalCode");
-                String phone = address.getString("phone");
+                String address1 = rs.getString("address");
+                String address2 = rs.getString("address2");
+                String postalCode = rs.getString("postalCode");
+                String phone = rs.getString("phone");
 
                 //get city information
-                int cityID = address.getInt("cityId");
-                ResultSet city = DBCity.getCity(cityID);
-                city.next();
-                String cityName = city.getString("city");
+                int cityID = rs.getInt("cityId");
+                String cityName = rs.getString("city");
                 City customerCity = new City(cityID, cityName);
 
                 //get customer information
