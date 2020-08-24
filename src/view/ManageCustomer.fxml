@@ -13,7 +13,7 @@
     <children>
         <HBox alignment="CENTER" prefHeight="139.0" prefWidth="400.0">
             <children>
-                <Label text="REPLACE">
+                <Label fx:id="actionLbl" text="REPLACE">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -96,7 +96,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
                   </TextField>
-                  <ComboBox prefWidth="150.0">
+                  <ComboBox fx:id="cityCmb" prefWidth="150.0">
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>

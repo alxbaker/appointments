@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -28,7 +29,13 @@ public class CustomerController implements Initializable {
         cityClm.setCellValueFactory(new PropertyValueFactory<>("city"));
         postalCodeclm.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         phoneClm.setCellValueFactory(new PropertyValueFactory<>("phone"));
+
+        customerCmb.setItems(customers);
+
     }
+
+    @FXML
+    private ComboBox<Customer> customerCmb;
 
     @FXML
     private TableView<Customer> customerTbl;
@@ -59,11 +66,6 @@ public class CustomerController implements Initializable {
     @FXML
     void backEvent(ActionEvent event) throws IOException {
         new Scenes().setScene(event, "/view/Main.fxml");
-    }
-
-    @FXML
-    void customerSelEvent(ActionEvent event) throws IOException {
-        new Scenes().newStage(event, "/view/ManageCustomer.fxml");
     }
 
     @FXML

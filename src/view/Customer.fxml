@@ -44,7 +44,7 @@
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </HBox.margin>
                                         </Label>
-                                        <ComboBox onAction="#customerSelEvent" prefWidth="400.0">
+                                        <ComboBox fx:id="customerCmb" prefWidth="400.0">
                                             <HBox.margin>
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </HBox.margin>
