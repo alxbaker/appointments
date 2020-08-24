@@ -1,4 +1,6 @@
+import dao.DBCities;
 import dao.DBConnection;
+import dao.DBCustomer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -6,13 +8,16 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class main extends Application {
 
     @Override
-    public void init() {
+    public void init() throws SQLException {
         //open database connection
         Connection conn = DBConnection.openConnection();
+        DBCities.getAllCities();
+        DBCustomer.getAllCustomers();
 
     }
 

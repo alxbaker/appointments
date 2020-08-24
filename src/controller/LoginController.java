@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import model.User;
 import util.Scenes;
 
 import java.io.IOException;
@@ -14,13 +15,21 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
+    static User loggedInUser;
+
+    public static User getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    public static void setLoggedInUser(User loggedInUser) {
+        loggedInUser = loggedInUser;
+    }
 
     @Override
     public void initialize (URL url, ResourceBundle rb) {
         usernameTxt.setPromptText("Enter a user name");
         passwordTxt.setPromptText("Enter a password");
     }
-
 
     @FXML
     private TextField usernameTxt;

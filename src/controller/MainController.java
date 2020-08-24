@@ -1,8 +1,10 @@
 package controller;
 
+import dao.DBCities;
 import dao.DBCustomer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import sun.rmi.runtime.Log;
 import util.Scenes;
 
 import java.io.IOException;
@@ -18,11 +20,11 @@ public class MainController {
     @FXML
     void customerEvent(ActionEvent event) throws IOException, SQLException {
         new Scenes().setScene(event, "/view/Customer.fxml");
-        DBCustomer.getAllCustomers();
     }
 
     @FXML
     void logoutEvent(ActionEvent event) throws IOException {
+        LoginController.setLoggedInUser(null);
         new Scenes().setScene(event, "/view/Login.fxml");
     }
 

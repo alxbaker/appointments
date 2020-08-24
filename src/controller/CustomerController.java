@@ -18,11 +18,9 @@ import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
 
-    private static ObservableList<Customer> customers = FXCollections.observableArrayList();
-
     @Override
     public void initialize (URL url, ResourceBundle rb) {
-        customerTbl.setItems(customers);
+        customerTbl.setItems(Customer.customers);
         customerClm.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         lineOneClm.setCellValueFactory(new PropertyValueFactory<>("address"));
         lineTwoClm.setCellValueFactory(new PropertyValueFactory<>("address2"));
@@ -30,7 +28,7 @@ public class CustomerController implements Initializable {
         postalCodeclm.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         phoneClm.setCellValueFactory(new PropertyValueFactory<>("phone"));
 
-        customerCmb.setItems(customers);
+        customerCmb.setItems(Customer.customers);
 
     }
 
@@ -61,6 +59,7 @@ public class CustomerController implements Initializable {
     @FXML
     void addCustomerEvent(ActionEvent event) throws IOException {
         new Scenes().newStage(event, "/view/ManageCustomer.fxml");
+
     }
 
     @FXML
@@ -78,9 +77,11 @@ public class CustomerController implements Initializable {
         new Scenes().newStage(event, "/view/ManageCustomer.fxml");
     }
 
-    public static void addCustomer (Customer customer) {
-        customers.add(customer);
-    }
+    //FIXME
+   /* public void refreshCustomers() {
+        customerTbl.refresh();
+    }*/
+
 }
 
 

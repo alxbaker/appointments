@@ -5,13 +5,12 @@ import model.City;
 import model.Customer;
 
 import javax.swing.plaf.basic.BasicCheckBoxMenuItemUI;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DBCustomer {
     private final static String selectStatement = "SELECT * FROM customer CROSS JOIN address, city WHERE (customer.addressId = address.addressId) AND (address.cityId = city.cityId);";
+    private static String insertStatement = "INSERT INTO customer (customerName,addressId,active,createDate,createdBy,lastUpdate,lastUpdateBy)" +
+            "VALUES (?,?,1,CURDATE(),?,CURDATE(),?)";
     private final static Connection conn = DBConnection.getConnection();
 
     public static void getAllCustomers() throws SQLException {
@@ -30,23 +29,38 @@ public class DBCustomer {
 
                 //get city information
                 int cityID = rs.getInt("cityId");
-                String cityName = rs.getString("city");
-                City customerCity = new City(cityID, cityName);
 
                 //get customer information
                 int customerID = rs.getInt("customerId");
                 String customerName = rs.getString("customerName");
 
-
                 //create customer
-                Customer customer = new Customer(customerID, customerName, addressId, address1, address2, postalCode, phone, customerCity);
-                CustomerController.addCustomer(customer);
+                Customer customer = new Customer(customerID, customerName, addressId, address1, address2, postalCode, phone, City.getCity(cityID));
 
             }
         } catch (SQLException e) {
             System.out.println("SQL Exception");
             System.out.println("ERROR: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public static int insertCustomer(String customerName, int addressId, String user) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, customerName);
+        statement.setInt(2, addressId);
+        statement.setString(3, user);
+        statement.setString(4, user);
+
+        statement.execute();
+
+        if (statement.getUpdateCount() == 1) {
+            ResultSet rs = statement.getGeneratedKeys();
+            rs.next();
+            return rs.getInt(1);
+        }
+        else {
+            return 0;
         }
     }
 }

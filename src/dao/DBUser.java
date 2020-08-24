@@ -1,5 +1,6 @@
 package dao;
 
+import controller.LoginController;
 import model.User;
 
 import java.sql.Connection;
@@ -25,8 +26,11 @@ public class DBUser {
             int userId = rs.getInt("userId");
             String userName = rs.getString("userName");
             User u = new User(userId, userName);
+            LoginController.setLoggedInUser(u);
             return true;
         }
     }
+
+
 
 }
