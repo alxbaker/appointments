@@ -1,11 +1,7 @@
 package dao;
 
-import controller.CustomerController;
-import controller.ManageCustomerController;
 import model.City;
-import model.Customer;
 
-import javax.swing.plaf.basic.BasicCheckBoxMenuItemUI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
