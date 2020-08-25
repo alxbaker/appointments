@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.City;
 import model.Customer;
+import model.User;
 import util.Scenes;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.ResourceBundle;
 public class ManageCustomerController implements Initializable {
     private static String currentMode;
     private static Customer currentCustomer;
+    private static User currentUser = User.getCurrentUser();
 
     public Customer getCurrentCustomer() {
         return currentCustomer;
@@ -100,10 +102,9 @@ public class ManageCustomerController implements Initializable {
             String postalCode = postalCodeTxt.getText();
             String phone = phoneTxt.getText();
 
-            //FIXME
-            //String userName= LoginController.getLoggedInUser().getUserName();
-            int addressId = DBAddress.insertAddress(lineOne, lineTwo, cityId, postalCode, phone, "admin");
-            int customerId = DBCustomer.insertCustomer(customerName, addressId, "admin");
+            String userName= currentUser.getUserName();
+            int addressId = DBAddress.insertAddress(lineOne, lineTwo, cityId, postalCode, phone, userName);
+            int customerId = DBCustomer.insertCustomer(customerName, addressId, userName);
             new Customer(customerId, customerName, addressId,lineOne, lineTwo, postalCode, phone, City.getCity(cityId));
             new Scenes().setScene(event, "/view/Customer.fxml");
         }
@@ -126,9 +127,8 @@ public class ManageCustomerController implements Initializable {
             String phone = phoneTxt.getText();
             currentCustomer.setPhone(phone);
 
-            //FIXME
-            //String userName= LoginController.getLoggedInUser().getUserName();
-            DBAddress.updateAddress(currentCustomer.getAddressID(), lineOne, lineTwo, cityId, postalCode, phone, "admin");
+            String userName= currentUser.getUserName();
+            DBAddress.updateAddress(currentCustomer.getAddressID(), lineOne, lineTwo, cityId, postalCode, phone, userName);
             DBCustomer.updateCustomer(customerName, "admin", currentCustomer.getCustomerID());
             new Scenes().setScene(event, "/view/Customer.fxml");
         }

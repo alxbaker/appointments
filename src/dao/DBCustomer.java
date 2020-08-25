@@ -67,7 +67,7 @@ public class DBCustomer {
     }
 
     public static void deleteCustomer(int customerId) throws SQLException {
-        PreparedStatement statement = conn.prepareStatement(deleteStatement, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = conn.prepareStatement(deleteStatement);
         statement.setInt(1, customerId);
         statement.execute();
     }
