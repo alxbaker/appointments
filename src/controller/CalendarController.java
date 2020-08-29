@@ -1,13 +1,39 @@
 package controller;
 
+import dao.DBAddress;
+import dao.DBAppointment;
+import dao.DBCustomer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import model.Appointment;
+import model.Customer;
+import model.User;
+import util.Alerts;
 import util.Scenes;
 
 import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
 
-public class CalendarController {
+public class CalendarController implements Initializable {
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        apptCmb.setItems(Appointment.appointments);
+        allTbl.setItems(Appointment.appointments);
+        allConsultantClm.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        allTitleClm.setCellValueFactory(new PropertyValueFactory<>("title"));
+        allTypeClm.setCellValueFactory(new PropertyValueFactory<>("type"));
+        allStartClm.setCellValueFactory(new PropertyValueFactory<>("displayStart"));
+        allEndClm.setCellValueFactory(new PropertyValueFactory<>("displayEnd"));
+        allCustomerClm.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+    }
+
     @FXML
     private TabPane tabPane;
 
@@ -15,7 +41,7 @@ public class CalendarController {
     private Tab allTab;
 
     @FXML
-    private TableView<?> allTbl;
+    private TableView<Appointment> allTbl;
 
     @FXML
     private TableColumn<?, ?> allConsultantClm;
@@ -39,7 +65,7 @@ public class CalendarController {
     private Tab monthTab;
 
     @FXML
-    private TableView<?> monthTbl;
+    private TableView<Appointment> monthTbl;
 
     @FXML
     private TableColumn<?, ?> monthConsultantClm;
@@ -63,7 +89,7 @@ public class CalendarController {
     private Tab weekTab;
 
     @FXML
-    private TableView<?> weekTbl;
+    private TableView<Appointment> weekTbl;
 
     @FXML
     private TableColumn<?, ?> weekConsultantClm;
@@ -84,11 +110,12 @@ public class CalendarController {
     private TableColumn<?, ?> weekEndClm;
 
     @FXML
-    private ComboBox<?> apptCmb;
+    private ComboBox<Appointment> apptCmb;
 
     @FXML
     void addAptEvent(ActionEvent event) throws IOException {
-        new Scenes().newStage(event, "/view/ManageAppointment.fxml");
+        ManageAppointmentController.setCurrentMode("Add");
+        new Scenes().setScene(event, "/view/ManageAppointment.fxml");
     }
 
     @FXML
@@ -102,13 +129,23 @@ public class CalendarController {
     }
 
     @FXML
-    void delAptEvent(ActionEvent event) throws IOException {
-        new Scenes().newStage(event, "/view/ManageAppointment.fxml");
+    void delAptEvent(ActionEvent event) throws IOException, SQLException {
+        Appointment currentAppointment = apptCmb.getValue();
+        if (currentAppointment == null) {
+            Alerts.generateInfoAlert("No Selection", "Please select an appointment.");
+        }
+        else {
+            boolean confirmation = Alerts.generateConfAlert("Delete Appointment Confirmation", "Are you sure you want to delete this appointment?");
+            if (confirmation == true) {
+                DBAppointment.deleteAppointment(currentAppointment.getAppointmentId());
+                Appointment.appointments.remove(currentAppointment);
+            }
+        }
     }
 
     @FXML
     void updateAptEvent(ActionEvent event) throws IOException {
-        new Scenes().newStage(event, "/view/ManageAppointment.fxml");
+        new Scenes().setScene(event, "/view/ManageAppointment.fxml");
     }
 
 }

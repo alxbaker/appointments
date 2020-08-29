@@ -33,11 +33,11 @@ public class DBCustomer {
                 int cityID = rs.getInt("cityId");
 
                 //get customer information
-                int customerID = rs.getInt("customerId");
+                int customerId = rs.getInt("customerId");
                 String customerName = rs.getString("customerName");
 
                 //create customer
-                Customer customer = new Customer(customerID, customerName, addressId, address1, address2, postalCode, phone, City.getCity(cityID));
+                new Customer(customerId, customerName, addressId, address1, address2, postalCode, phone, City.getCity(cityID));
 
             }
         } catch (SQLException e) {

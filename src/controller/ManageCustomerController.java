@@ -2,8 +2,6 @@ package controller;
 
 import dao.DBAddress;
 import dao.DBCustomer;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,7 +44,7 @@ public class ManageCustomerController implements Initializable {
         if (currentMode == "Add") {
             actionLbl.setText("Add");
             cityCmb.setItems(City.cities);
-            customerTxt.setPromptText("Enter a customer name");
+
             lineOneTxt.setPromptText("Enter address line one");
             lineTwoTxt.setPromptText("Enter address line two");
             cityCmb.setPromptText("Select a city");
@@ -61,9 +59,7 @@ public class ManageCustomerController implements Initializable {
             lineTwoTxt.setText(currentCustomer.getAddress2());
             postalCodeTxt.setText(currentCustomer.getPostalCode());
             phoneTxt.setText(currentCustomer.getPhone());
-
         }
-
     }
 
     @FXML
@@ -88,8 +84,8 @@ public class ManageCustomerController implements Initializable {
     private TextField phoneTxt;
 
     @FXML
-    void backEvent(ActionEvent event) {
-        new Scenes().closeSecStage(event);
+    void backEvent(ActionEvent event) throws IOException {
+        new Scenes().setScene(event, "/view/Customer.fxml");
     }
 
     @FXML

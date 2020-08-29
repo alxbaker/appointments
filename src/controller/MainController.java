@@ -4,6 +4,9 @@ import dao.DBCities;
 import dao.DBCustomer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import model.Appointment;
+import model.Customer;
+import model.User;
 import sun.rmi.runtime.Log;
 import util.Scenes;
 
@@ -24,7 +27,9 @@ public class MainController {
 
     @FXML
     void logoutEvent(ActionEvent event) throws IOException {
-        LoginController.setLoggedInUser(null);
+        User.setCurrentUser(null);
+        Appointment.clearAppointments();
+        Customer.clearCustomers();
         new Scenes().setScene(event, "/view/Login.fxml");
     }
 

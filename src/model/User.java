@@ -1,6 +1,10 @@
 package model;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class User {
+    public static ObservableList<User> users = FXCollections.observableArrayList();
     int userId;
     String userName;
 
@@ -9,7 +13,16 @@ public class User {
     public User(int userId, String userName) {
         this.userId = userId;
         this.userName = userName;
-        setCurrentUser(this);
+        users.add(this);
+    }
+
+    public static User getUser(int id) {
+        for (User u : users) {
+            if (u.getUserId() == id) {
+                return u;
+            }
+        }
+        return null;
     }
 
     public static User getCurrentUser() {

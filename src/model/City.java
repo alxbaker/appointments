@@ -16,7 +16,7 @@ public class City {
 
     public static City getCity(int id) {
         for (City city : cities) {
-            if (city.cityID == id) {
+            if (city.getCityID() == id) {
                 return city;
             }
         }

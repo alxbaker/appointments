@@ -1,5 +1,8 @@
 package controller;
 
+import dao.DBAppointment;
+import dao.DBCities;
+import dao.DBCustomer;
 import dao.DBUser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,15 +18,6 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    static User loggedInUser;
-
-    public static User getLoggedInUser() {
-        return loggedInUser;
-    }
-
-    public static void setLoggedInUser(User loggedInUser) {
-        loggedInUser = loggedInUser;
-    }
 
     @Override
     public void initialize (URL url, ResourceBundle rb) {
@@ -43,6 +37,9 @@ public class LoginController implements Initializable {
         String password = passwordTxt.getText();
 
         if (DBUser.authenticateUser(username, password) == true) {
+            DBCities.getAllCities();
+            DBCustomer.getAllCustomers();
+            DBAppointment.getAllAppointments(User.getCurrentUser().getUserId());
             new Scenes().setScene(event, "/view/Main.fxml");
         }
         else {

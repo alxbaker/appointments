@@ -1,3 +1,4 @@
+import dao.DBAppointment;
 import dao.DBCities;
 import dao.DBConnection;
 import dao.DBCustomer;
@@ -6,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,11 +16,7 @@ public class main extends Application {
 
     @Override
     public void init() throws SQLException {
-        //open database connection
         Connection conn = DBConnection.openConnection();
-        DBCities.getAllCities();
-        DBCustomer.getAllCustomers();
-
     }
 
     public void start(Stage primaryStage) throws Exception{
@@ -31,7 +29,6 @@ public class main extends Application {
     }
 
     public void stop(){
-        //close database connection
         DBConnection.closeConnection();
     }
 

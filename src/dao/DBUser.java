@@ -26,7 +26,7 @@ public class DBUser {
             int userId = rs.getInt("userId");
             String userName = rs.getString("userName");
             User u = new User(userId, userName);
-            LoginController.setLoggedInUser(u);
+            User.setCurrentUser(u);
             return true;
         }
     }
