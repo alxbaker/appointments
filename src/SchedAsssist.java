@@ -1,21 +1,30 @@
-import dao.DBAppointment;
-import dao.DBCities;
+import controller.MainController;
 import dao.DBConnection;
-import dao.DBCustomer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class main extends Application {
+public class SchedAsssist extends Application {
+    private static ResourceBundle rb;
+
+    public void setRB() {
+        if (!Locale.getDefault().getLanguage().equals("de") && !Locale.getDefault().getLanguage().equals("es")) {
+            Locale.setDefault(Locale.ENGLISH);
+        }
+        this.rb = ResourceBundle.getBundle("util/Nat", Locale.getDefault());
+    }
+
+    public ResourceBundle getRb() {
+        return rb;
+    }
+
 
     @Override
     public void init() throws SQLException {
@@ -23,13 +32,10 @@ public class main extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception{
-        if (!Locale.getDefault().getLanguage().equals("de") && !Locale.getDefault().getLanguage().equals("es")) {
-            Locale.setDefault(Locale.ENGLISH);
-        }
-
-        ResourceBundle rb = ResourceBundle.getBundle("util/language/Nat", Locale.getDefault());
+        setRB();
+        MainController.setRb(rb);
         Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"), rb);
-        primaryStage.setTitle("Scheduling Assistant");
+        primaryStage.setTitle(rb.getString("title"));
         primaryStage.setScene(new Scene(root));
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(400);
@@ -41,6 +47,7 @@ public class main extends Application {
     }
 
     public static void main(String[] args) {
+        new SchedAsssist();
         launch(args);
     }
 }

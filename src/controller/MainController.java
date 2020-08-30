@@ -8,12 +8,19 @@ import model.Appointment;
 import model.Customer;
 import model.User;
 import sun.rmi.runtime.Log;
+import util.Files;
 import util.Scenes;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
 public class MainController {
+    private static ResourceBundle rb;
+
+    public static void setRb(ResourceBundle rb) {
+        MainController.rb = rb;
+    }
 
     @FXML
     void calendarEvent(ActionEvent event) throws IOException {
@@ -31,7 +38,8 @@ public class MainController {
         Appointment.clearAppointments();
         Customer.clearCustomers();
         User.clearUsers();
-        new Scenes().setScene(event, "/view/Login.fxml");
+
+        new Scenes().setScene(event, "/view/Login.fxml",rb);
     }
 
     @FXML

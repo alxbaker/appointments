@@ -13,6 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import model.User;
 import util.Alerts;
+import util.Files;
 import util.Scenes;
 
 import java.io.IOException;
@@ -77,6 +78,7 @@ public class LoginController implements Initializable {
         String password = passwordTxt.getText();
 
         if (DBUser.authenticateUser(username, password) == true) {
+            Files.updateLog(User.getCurrentUser());
             DBCities.getAllCities();
             DBCustomer.getAllCustomers();
             DBAppointment.getAllAppointments();

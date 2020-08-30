@@ -9,12 +9,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 public class Scenes {
-
     private Stage primaryStage;
-    private Stage secondaryStage;
     private Parent scene;
 
     public void setScene(ActionEvent event, String resourcePath) throws IOException {
@@ -25,21 +25,10 @@ public class Scenes {
 
     }
 
-    public void newStage(ActionEvent event, String resourcePath) throws IOException {
+    public void setScene(ActionEvent event, String resourcePath, ResourceBundle rb) throws IOException {
         primaryStage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader();
-        scene = loader.load(getClass().getResource(resourcePath));
-        secondaryStage = new Stage();
-        secondaryStage.setScene(new Scene(scene));
-        secondaryStage.initModality(Modality.WINDOW_MODAL);
-        secondaryStage.initOwner(primaryStage);
-        secondaryStage.show();
-
+        scene = FXMLLoader.load(getClass().getResource(resourcePath),rb);
+        primaryStage.setScene(new Scene(scene));
+        primaryStage.show();
     }
-
-    public void closeSecStage(ActionEvent event) {
-        secondaryStage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        secondaryStage.close();
-    }
-
 }
