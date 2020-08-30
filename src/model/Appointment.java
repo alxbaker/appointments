@@ -2,6 +2,7 @@ package model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 
 import java.text.DateFormat;
 import java.time.*;
@@ -9,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 
 public class Appointment {
     public static ObservableList<Appointment> appointments = FXCollections.observableArrayList();
+    public static ObservableList<Appointment> todayAppts = FXCollections.observableArrayList();
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy HH:mm");
     private int appointmentId;
     private String title;
@@ -36,6 +39,7 @@ public class Appointment {
         this.displayStart = start.format(formatter);
         this.displayEnd = start.format(formatter);
         appointments.add(this);
+        setTodayAppt(user,this);
     }
 
     public static Appointment getAppointment(int id) {
@@ -45,6 +49,13 @@ public class Appointment {
             }
         }
         return null;
+    }
+
+
+    public static void setTodayAppt(User u, Appointment a) {
+        if ((u == User.getCurrentUser() && (a.getStart().toLocalDate().equals(LocalDate.now())))) {
+            todayAppts.add(a);
+        }
     }
 
     public String getDisplayStart() {
@@ -65,6 +76,7 @@ public class Appointment {
 
     public static void clearAppointments() {
        appointments.clear();
+       todayAppts.clear();
     }
 
     public String getCustomerName() {

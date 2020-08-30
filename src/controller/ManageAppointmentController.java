@@ -42,7 +42,7 @@ public class ManageAppointmentController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         type.addAll("Virtual", "Onsite");
         hours.addAll("08", "09", "10", "11",
-                "12", "13", "14", "15", "16", "17");
+                "12", "13", "14", "15", "16", "17", "18");
         minutes.addAll("00", "15", "30", "45");
         if (currentMode == "Add") {
             modeLbl.setText(currentMode);
@@ -119,7 +119,6 @@ public class ManageAppointmentController implements Initializable {
 
     public static void setCurrAppointment(Appointment currAppointment) {
         ManageAppointmentController.currAppointment = currAppointment;
-
     }
 
     @FXML
@@ -145,10 +144,7 @@ public class ManageAppointmentController implements Initializable {
 
             //Start date and time
             LocalDateTime ldtLocStart = LocalDateTime.of(startDate, startTime);
-            ZonedDateTime zdtLocStart = ZonedDateTime.of(ldtLocStart, ZoneId.systemDefault());
-            ZonedDateTime zdtSQLStart = zdtLocStart.withZoneSameInstant(ZoneOffset.UTC);
-            LocalDateTime ldtSQLStart = zdtSQLStart.toLocalDateTime();
-            Timestamp tsStart = Timestamp.valueOf(ldtSQLStart);
+            Timestamp tsStart = Timestamp.valueOf(ldtLocStart);
 
             //End time
             int endHour = Integer.parseInt(endHourSel.getValue());
@@ -157,10 +153,7 @@ public class ManageAppointmentController implements Initializable {
 
             //End date and time
             LocalDateTime ldtLocEnd = LocalDateTime.of(startDate, endTime);
-            ZonedDateTime zdtLocEnd = ZonedDateTime.of(ldtLocEnd, ZoneId.systemDefault());
-            ZonedDateTime zdtSQLEnd = zdtLocEnd.withZoneSameInstant(ZoneOffset.UTC);
-            LocalDateTime ldtSQLEnd = zdtSQLEnd.toLocalDateTime();
-            Timestamp tsEnd = Timestamp.valueOf(ldtSQLEnd);
+            Timestamp tsEnd = Timestamp.valueOf(ldtLocEnd);
 
             int appointmentId = DBAppointment.insertAppointment(customer, apptTitle, apptType, tsStart, tsEnd);
             new Appointment(appointmentId,apptTitle,apptType,ldtLocStart, ldtLocEnd, customer,u);

@@ -15,6 +15,7 @@ import model.User;
 import util.Alerts;
 import util.Files;
 import util.Scenes;
+import util.Time;
 
 import java.io.IOException;
 import java.net.URL;
@@ -82,6 +83,8 @@ public class LoginController implements Initializable {
             DBCities.getAllCities();
             DBCustomer.getAllCustomers();
             DBAppointment.getAllAppointments();
+            Time.timeAlert();
+
             new Scenes().setScene(event, "/view/Main.fxml");
         }
         else {

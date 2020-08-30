@@ -59,7 +59,7 @@ public class AppointmentByTypeController implements Initializable {
             }
         }
 
-        appointmentsLbl.setText("Virtual: " + virtualCount + " Onsite: " + onsiteCount + " Misc: " + miscCount);
+        appointmentsLbl.setText("Virtual:  " + virtualCount + " Onsite:  " + onsiteCount +  " Misc:  " + miscCount);
 
     }
 
