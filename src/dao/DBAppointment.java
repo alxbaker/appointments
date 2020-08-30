@@ -12,11 +12,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class DBAppointment {
-    private final static String selectStatement = "SELECT * FROM appointment WHERE (userId = ?) AND (start < NOW());";
+    private final static String selectStatement = "SELECT * FROM appointment WHERE (userId = ?) AND (start > NOW());";
     private static String insertStatement = "INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
             "VALUES (?, ?, ?, 'a scheduled appointment', 'location not provided', 'contact not provided', ?, 'url not provided', ?, ?, CURDATE(), ?, CURDATE(), ?);";
-    private final static Connection conn = DBConnection.getConnection();
     private static  String deleteStatement = "DELETE FROM appointment WHERE appointmentId = ?";
+    private static String updateStatement = "UPDATE appointment SET customerId = ?, title =?, type = ?, start = ?, end = ?, lastUpdate = CURDATE(), lastUpdateBy = ? WHERE appointmentId = ?";
+    private final static Connection conn = DBConnection.getConnection();
 
     public static void getAllAppointments(int id) throws SQLException {
         try {
@@ -86,4 +87,16 @@ public class DBAppointment {
         statement.execute();
     }
 
+    public static void updateAppointment(int appointmentId, Customer customer, String title, String type, Timestamp start, Timestamp end) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement(updateStatement);
+        User u = User.getCurrentUser();
+        statement.setInt(1, customer.getCustomerID());
+        statement.setString(2, title);
+        statement.setString(3, type);
+        statement.setTimestamp(4, start);
+        statement.setTimestamp(5, end);
+        statement.setInt(6, u.getUserId());
+        statement.setInt(7,appointmentId);
+        statement.execute();
+    }
 }

@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Appointment {
     public static ObservableList<Appointment> appointments = FXCollections.observableArrayList();
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy h:m a");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy HH:mm");
     private int appointmentId;
     private String title;
     private String type;

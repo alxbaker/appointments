@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class ManageAppointmentController implements Initializable {
     ObservableList<String> type = FXCollections.observableArrayList();
+    private static Appointment currAppointment;
 
     private static String currentMode;
     ObservableList<String> hours = FXCollections.observableArrayList();
@@ -53,6 +54,37 @@ public class ManageAppointmentController implements Initializable {
             endHourSel.setItems(hours);
             endMinSel.setItems(minutes);
         }
+        else if (currentMode == "Update") {
+            modeLbl.setText(currentMode);
+            title.setText(currAppointment.getTitle());
+            customerSel.setItems(Customer.customers);
+            customerSel.setValue(currAppointment.getCustomer());
+            typeSel.setItems(type);
+            typeSel.setValue(currAppointment.getType());
+
+            //start date
+            LocalDateTime ldtStart = currAppointment.getStart();
+            LocalDate startDate = ldtStart.toLocalDate();
+            startDateSel.setValue(startDate);
+
+            //start time
+            String startHour = Integer.toString(ldtStart.getHour());
+            String startMin = Integer.toString(ldtStart.getMinute());
+            startHourSel.setItems(hours);
+            startHourSel.setValue(startHour);
+            startMinSel.setItems(minutes);
+            startMinSel.setValue(startMin);
+
+            //end time
+            LocalDateTime ldtEnd = currAppointment.getEnd();
+            String endHour = Integer.toString(ldtEnd.getHour());
+            String endMin = Integer.toString(ldtEnd.getMinute());
+
+            endHourSel.setItems(hours);
+            endHourSel.setValue(endHour);
+            endMinSel.setItems(minutes);
+            endMinSel.setValue(endMin);
+        }
     }
     @FXML
     private Label modeLbl;
@@ -80,6 +112,15 @@ public class ManageAppointmentController implements Initializable {
 
     @FXML
     private ComboBox<String> endMinSel;
+
+    public static Appointment getCurrAppointment() {
+        return currAppointment;
+    }
+
+    public static void setCurrAppointment(Appointment currAppointment) {
+        ManageAppointmentController.currAppointment = currAppointment;
+
+    }
 
     @FXML
     void backEvent(ActionEvent event) throws IOException {
@@ -125,10 +166,51 @@ public class ManageAppointmentController implements Initializable {
             new Appointment(appointmentId,apptTitle,apptType,ldtLocStart, ldtLocEnd, customer,u);
         }
         else if (currentMode == "Update") {
+            int apptId = currAppointment.getAppointmentId();
+            Customer customer = customerSel.getValue();
+            currAppointment.setCustomer(customer);
 
+            String apptTitle = title.getText();
+            currAppointment.setTitle(apptTitle);
+
+            String apptType = typeSel.getValue();
+            currAppointment.setType(apptType);
+
+            //Date
+            LocalDate startDate = startDateSel.getValue();
+
+            //Start time
+            int startHour = Integer.parseInt(startHourSel.getValue());
+            int startMin = Integer.parseInt(startMinSel.getValue());
+            LocalTime startTime = LocalTime.of(startHour,startMin);
+
+            //Start date and time
+            LocalDateTime ldtLocStart = LocalDateTime.of(startDate, startTime);
+            currAppointment.setStart(ldtLocStart);
+
+            //convert to UTC
+            ZonedDateTime zdtLocStart = ZonedDateTime.of(ldtLocStart, ZoneId.systemDefault());
+            ZonedDateTime zdtSQLStart = zdtLocStart.withZoneSameInstant(ZoneOffset.UTC);
+            LocalDateTime ldtSQLStart = zdtSQLStart.toLocalDateTime();
+            Timestamp tsStart = Timestamp.valueOf(ldtSQLStart);
+
+            //End time
+            int endHour = Integer.parseInt(endHourSel.getValue());
+            int endMin = Integer.parseInt(endMinSel.getValue());
+            LocalTime endTime = LocalTime.of(endHour,endMin);
+
+            //End date and time
+            LocalDateTime ldtLocEnd = LocalDateTime.of(startDate, endTime);
+            currAppointment.setEnd(ldtLocEnd);
+
+            //convert to UTC
+            ZonedDateTime zdtLocEnd = ZonedDateTime.of(ldtLocEnd, ZoneId.systemDefault());
+            ZonedDateTime zdtSQLEnd = zdtLocEnd.withZoneSameInstant(ZoneOffset.UTC);
+            LocalDateTime ldtSQLEnd = zdtSQLEnd.toLocalDateTime();
+            Timestamp tsEnd = Timestamp.valueOf(ldtSQLEnd);
+
+            DBAppointment.updateAppointment(apptId,customer,apptTitle,apptType,tsStart,tsEnd);
         }
         new Scenes().setScene(event, "/view/Calendar.fxml");
     }
-
-
 }

@@ -16,6 +16,7 @@ import util.Scenes;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
@@ -79,9 +80,14 @@ public class CustomerController implements Initializable {
         else {
             boolean confirmation = Alerts.generateConfAlert("Delete Customer Confirmation", "Are you sure you want to delete this customer?");
             if (confirmation == true) {
-                DBCustomer.deleteCustomer(currentCustomer.getCustomerID());
-                DBAddress.deleteAddress(currentCustomer.getAddressID());
-                Customer.customers.remove(currentCustomer);
+                try {
+                    DBCustomer.deleteCustomer(currentCustomer.getCustomerID());
+                    DBAddress.deleteAddress(currentCustomer.getAddressID());
+                    Customer.customers.remove(currentCustomer);
+                }
+                catch (SQLIntegrityConstraintViolationException e) {
+                    Alerts.generateInfoAlert("Existing Appointments", "This customer cannot be deleted while they have existing appointments.");
+                }
             }
         }
     }
@@ -94,7 +100,7 @@ public class CustomerController implements Initializable {
         }
         else {
             ManageCustomerController.setMode("Update");
-            ManageCustomerController.setCurrentCustomer(customerCmb.getValue());
+            ManageCustomerController.setCurrentCustomer(currentCustomer);
             new Scenes().setScene(event, "/view/ManageCustomer.fxml");
         }
     }

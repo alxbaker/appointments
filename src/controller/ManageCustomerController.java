@@ -42,7 +42,7 @@ public class ManageCustomerController implements Initializable {
     @Override
     public void initialize (URL url, ResourceBundle rb) {
         if (currentMode == "Add") {
-            actionLbl.setText("Add");
+            actionLbl.setText(currentMode);
             cityCmb.setItems(City.cities);
 
             lineOneTxt.setPromptText("Enter address line one");
@@ -52,7 +52,7 @@ public class ManageCustomerController implements Initializable {
             phoneTxt.setPromptText("Enter phone number");
         }
         else if (currentMode == "Update") {
-            actionLbl.setText("Update");
+            actionLbl.setText(currentMode);
             cityCmb.setValue(currentCustomer.getCity());
             customerTxt.setText(currentCustomer.getCustomerName());
             lineOneTxt.setText(currentCustomer.getAddress());

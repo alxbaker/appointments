@@ -73,6 +73,7 @@ public class DBCustomer {
     }
 
     public static void updateCustomer(String customerName, String user, int customerId) throws SQLException {
+        //TODO remove generated keys
         PreparedStatement statement = conn.prepareStatement(updateStatement, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, customerName);
         statement.setString(2, user);

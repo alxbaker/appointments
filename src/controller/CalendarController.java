@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
 
 public class CalendarController implements Initializable {
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         apptCmb.setItems(Appointment.appointments);
@@ -145,7 +144,14 @@ public class CalendarController implements Initializable {
 
     @FXML
     void updateAptEvent(ActionEvent event) throws IOException {
-        new Scenes().setScene(event, "/view/ManageAppointment.fxml");
+        Appointment currAppointment = apptCmb.getValue();
+        if (currAppointment == null) {
+            Alerts.generateInfoAlert("No Selection", "Please select an appointment");
+        }
+        else {
+            ManageAppointmentController.setCurrentMode("Update");
+            ManageAppointmentController.setCurrAppointment(currAppointment);
+            new Scenes().setScene(event, "/view/ManageAppointment.fxml");
+        }
     }
-
 }
