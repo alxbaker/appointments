@@ -30,7 +30,7 @@
                                     <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <ComboBox onAction="#cnsltEvent" prefWidth="400.0">
+                              <ComboBox fx:id="cnslCmb" onAction="#cnsltEvent" prefWidth="400.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                  </HBox.margin>
@@ -45,7 +45,7 @@
                <children>
                   <VBox prefHeight="424.0" prefWidth="998.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <TableView onSort="#cnsltTbl" prefHeight="311.0" prefWidth="998.0">
+                        <TableView fx:id="cnsltTbl" prefHeight="311.0" prefWidth="998.0">
                            <columns>
                               <TableColumn fx:id="cnsltClm" prefWidth="167.0" text="Consultant" />
                               <TableColumn fx:id="titleClm" prefWidth="167.0" text="Title" />

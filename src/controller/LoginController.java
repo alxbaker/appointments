@@ -33,13 +33,14 @@ public class LoginController implements Initializable {
 
     @FXML
     void loginEvent(ActionEvent event) throws IOException, SQLException {
+        DBUser.getAllUsers();
         String username = usernameTxt.getText();
         String password = passwordTxt.getText();
 
         if (DBUser.authenticateUser(username, password) == true) {
             DBCities.getAllCities();
             DBCustomer.getAllCustomers();
-            DBAppointment.getAllAppointments(User.getCurrentUser().getUserId());
+            DBAppointment.getAllAppointments();
             new Scenes().setScene(event, "/view/Main.fxml");
         }
         else {

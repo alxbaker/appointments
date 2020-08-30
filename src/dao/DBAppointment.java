@@ -12,17 +12,16 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class DBAppointment {
-    private final static String selectStatement = "SELECT * FROM appointment WHERE (userId = ?) AND (start > NOW());";
+    private final static String selectStatement = "SELECT * FROM appointment WHERE (start > NOW());";
     private static String insertStatement = "INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
             "VALUES (?, ?, ?, 'a scheduled appointment', 'location not provided', 'contact not provided', ?, 'url not provided', ?, ?, CURDATE(), ?, CURDATE(), ?);";
     private static  String deleteStatement = "DELETE FROM appointment WHERE appointmentId = ?";
     private static String updateStatement = "UPDATE appointment SET customerId = ?, title =?, type = ?, start = ?, end = ?, lastUpdate = CURDATE(), lastUpdateBy = ? WHERE appointmentId = ?";
     private final static Connection conn = DBConnection.getConnection();
 
-    public static void getAllAppointments(int id) throws SQLException {
+    public static void getAllAppointments() throws SQLException {
         try {
             PreparedStatement statement = conn.prepareStatement(selectStatement);
-            statement.setInt(1, id);
             statement.execute();
             ResultSet rs = statement.getResultSet();
 

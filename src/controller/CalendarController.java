@@ -3,6 +3,9 @@ package controller;
 import dao.DBAddress;
 import dao.DBAppointment;
 import dao.DBCustomer;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,21 +19,51 @@ import util.Scenes;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class CalendarController implements Initializable {
+    //this Lambda expression creates a filtered list of appointments for the logged in user
+    FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.appointments, e -> e.getUser() == User.getCurrentUser());
+
+    //this Lambda expression creates a filtered list of appointments in the current month
+    FilteredList<Appointment> monthAppointments = new FilteredList<>(Appointment.appointments, e -> e.getStart().getMonth() == LocalDate.now().getMonth());
+
+    //this Lambda expression creates a filtered list of appointments this week of the year
+    FilteredList<Appointment> weekAppointments = new FilteredList<>(Appointment.appointments, e -> e.getStart().get(WeekFields.of(Locale.getDefault()).weekOfYear()) == LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfYear()));
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        apptCmb.setItems(Appointment.appointments);
-        allTbl.setItems(Appointment.appointments);
+        apptCmb.setItems(userAppointments);
+        allTbl.setItems(userAppointments);
         allConsultantClm.setCellValueFactory(new PropertyValueFactory<>("userName"));
         allTitleClm.setCellValueFactory(new PropertyValueFactory<>("title"));
         allTypeClm.setCellValueFactory(new PropertyValueFactory<>("type"));
         allStartClm.setCellValueFactory(new PropertyValueFactory<>("displayStart"));
         allEndClm.setCellValueFactory(new PropertyValueFactory<>("displayEnd"));
         allCustomerClm.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+
+        monthTbl.setItems(monthAppointments);
+        monthConsultantClm.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        monthTitleClm.setCellValueFactory(new PropertyValueFactory<>("title"));
+        monthTypeClm.setCellValueFactory(new PropertyValueFactory<>("type"));
+        monthStartClm.setCellValueFactory(new PropertyValueFactory<>("displayStart"));
+        monthEndClm.setCellValueFactory(new PropertyValueFactory<>("displayEnd"));
+        monthCustomerClm.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+
+        weekTbl.setItems(weekAppointments);
+        weekConsultantClm.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        weekTitleClm.setCellValueFactory(new PropertyValueFactory<>("title"));
+        weekTypeClm.setCellValueFactory(new PropertyValueFactory<>("type"));
+        weekStartclm.setCellValueFactory(new PropertyValueFactory<>("displayStart"));
+        weekEndClm.setCellValueFactory(new PropertyValueFactory<>("displayEnd"));
+        weekCustomerClm.setCellValueFactory(new PropertyValueFactory<>("customerName"));
     }
 
     @FXML

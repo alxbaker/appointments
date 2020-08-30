@@ -30,6 +30,7 @@ public class MainController {
         User.setCurrentUser(null);
         Appointment.clearAppointments();
         Customer.clearCustomers();
+        User.clearUsers();
         new Scenes().setScene(event, "/view/Login.fxml");
     }
 

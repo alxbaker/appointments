@@ -25,6 +25,10 @@ public class User {
         return null;
     }
 
+    public static void clearUsers(){
+        users.clear();
+    }
+
     public static User getCurrentUser() {
         return currentUser;
     }
@@ -47,5 +51,10 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @Override
+    public String toString() {
+        return userName;
     }
 }
