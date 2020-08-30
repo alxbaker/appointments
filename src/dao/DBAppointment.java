@@ -12,7 +12,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class DBAppointment {
-    private final static String selectStatement = "SELECT * FROM appointment WHERE (start > NOW());";
+    private final static String selectStatement = "SELECT * FROM appointment WHERE (start >= NOW());";
+    private final static String countStatement = "SELECT COUNT(*) FROM appointment WHERE (start > NOW());";
     private static String insertStatement = "INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
             "VALUES (?, ?, ?, 'a scheduled appointment', 'location not provided', 'contact not provided', ?, 'url not provided', ?, ?, CURDATE(), ?, CURDATE(), ?);";
     private static  String deleteStatement = "DELETE FROM appointment WHERE appointmentId = ?";

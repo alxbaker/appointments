@@ -41,8 +41,8 @@ public class ManageAppointmentController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         type.addAll("Virtual", "Onsite");
-        hours.addAll("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
-                "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23");
+        hours.addAll("08", "09", "10", "11",
+                "12", "13", "14", "15", "16", "17");
         minutes.addAll("00", "15", "30", "45");
         if (currentMode == "Add") {
             modeLbl.setText(currentMode);

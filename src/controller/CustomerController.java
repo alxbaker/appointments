@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
 
-
     @Override
     public void initialize (URL url, ResourceBundle rb) {
         customerTbl.setItems(Customer.customers);

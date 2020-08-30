@@ -36,7 +36,6 @@ public class Appointment {
         this.displayStart = start.format(formatter);
         this.displayEnd = start.format(formatter);
         appointments.add(this);
-
     }
 
     public static Appointment getAppointment(int id) {
@@ -132,7 +131,6 @@ public class Appointment {
         this.customer = customer;
         customerName = customer.toString();
     }
-
 
     public User getUser() {
         return user;

@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,6 +17,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ConsultantScheduleController implements Initializable {
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cnslCmb.setItems(User.users);
@@ -53,12 +55,18 @@ public class ConsultantScheduleController implements Initializable {
     @FXML
     void cnsltEvent(ActionEvent event) {
         User currCnslt = cnslCmb.getValue();
+        //this Lambda expression creates a filtered list of appointments for the logged in user
+        FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.appointments, e -> e.getUser() == currCnslt);
+        cnsltTbl.setItems(userAppointments);
+        cnsltClm.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        titleClm.setCellValueFactory(new PropertyValueFactory<>("title"));
+        typeClm.setCellValueFactory(new PropertyValueFactory<>("type"));
+        startClm.setCellValueFactory(new PropertyValueFactory<>("displayStart"));
+        endClm.setCellValueFactory(new PropertyValueFactory<>("displayEnd"));
+        customerClm.setCellValueFactory(new PropertyValueFactory<>("customerName"));
     }
 
-    @FXML
-    void cnsltTbl(ActionEvent event) {
-        cnsltTbl.setItems(Appointment.appointments);
-    }
+
 
 
 }

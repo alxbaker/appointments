@@ -31,11 +31,11 @@ public class CalendarController implements Initializable {
     //this Lambda expression creates a filtered list of appointments for the logged in user
     FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.appointments, e -> e.getUser() == User.getCurrentUser());
 
-    //this Lambda expression creates a filtered list of appointments in the current month
-    FilteredList<Appointment> monthAppointments = new FilteredList<>(Appointment.appointments, e -> e.getStart().getMonth() == LocalDate.now().getMonth());
+    //this Lambda expression creates a filtered list of appointments for the current user in the current month
+    FilteredList<Appointment> monthAppointments = new FilteredList<>(userAppointments, e -> e.getStart().getMonth() == LocalDate.now().getMonth());
 
-    //this Lambda expression creates a filtered list of appointments this week of the year
-    FilteredList<Appointment> weekAppointments = new FilteredList<>(Appointment.appointments, e -> e.getStart().get(WeekFields.of(Locale.getDefault()).weekOfYear()) == LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfYear()));
+    //this Lambda expression creates a filtered list of appointments for the current this week of the year
+    FilteredList<Appointment> weekAppointments = new FilteredList<>(userAppointments, e -> e.getStart().get(WeekFields.of(Locale.getDefault()).weekOfYear()) == LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfYear()));
 
 
     @Override
