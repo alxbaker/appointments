@@ -31,6 +31,9 @@ public class CalendarController implements Initializable {
     //this Lambda expression creates a filtered list of appointments for the logged in user
     FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.appointments, e -> e.getUser() == User.getCurrentUser());
 
+    //this Lambda expresses creates a filtered list of appoints for the logged in user on or after today.
+    FilteredList<Appointment> userCurrAppointments = new FilteredList<>(userAppointments, e -> ((e.getStart().toLocalDate().isAfter(LocalDate.now())) || (e.getStart().toLocalDate().isEqual(LocalDate.now()))));
+
     //this Lambda expression creates a filtered list of appointments for the current user in the current month
     FilteredList<Appointment> monthAppointments = new FilteredList<>(userAppointments, e -> e.getStart().getMonth() == LocalDate.now().getMonth());
 
@@ -40,8 +43,8 @@ public class CalendarController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        apptCmb.setItems(userAppointments);
-        allTbl.setItems(userAppointments);
+        apptCmb.setItems(userCurrAppointments);
+        allTbl.setItems(userCurrAppointments);
         allConsultantClm.setCellValueFactory(new PropertyValueFactory<>("userName"));
         allTitleClm.setCellValueFactory(new PropertyValueFactory<>("title"));
         allTypeClm.setCellValueFactory(new PropertyValueFactory<>("type"));

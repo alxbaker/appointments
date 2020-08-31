@@ -15,11 +15,8 @@ public class Time {
 
             long timeDifference = ChronoUnit.MINUTES.between(currentTime, startTime);
 
-            if (timeDifference > 0 && timeDifference <= 5) {
-                Alerts.generateInfoAlert("Upcoming event","You have an event in approximately " + timeDifference + " minutes!");
-            }
-            else if (timeDifference == 0){
-                Alerts.generateInfoAlert("Ongoing event", "You have an event starting now!");
+            if (timeDifference >= 0 && timeDifference <= 5) {
+                Alerts.generateInfoAlert("Upcoming event","You have a meeting with " + a.getCustomerName() + " at " + a.getStart());
             }
 
         }

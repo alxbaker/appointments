@@ -18,7 +18,7 @@ public class TotalAppointmentController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         int apptCount = Appointment.appointments.size();
-        appointmentCountLbl.setText("There are " + apptCount + " total appointments on or after today's date");
+        appointmentCountLbl.setText("There are " + apptCount + " total appointments");
     }
 
     @FXML

@@ -1,6 +1,7 @@
 package controller;
 
 import dao.DBAddress;
+import dao.DBAppointment;
 import dao.DBCustomer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import model.Appointment;
 import model.Customer;
 import util.Alerts;
 import util.Scenes;
@@ -77,16 +79,19 @@ public class CustomerController implements Initializable {
             Alerts.generateInfoAlert("No Selection", "Please select a customer");
         }
         else {
-            boolean confirmation = Alerts.generateConfAlert("Delete Customer Confirmation", "Are you sure you want to delete this customer?");
+            boolean confirmation = Alerts.generateConfAlert("Delete Customer Confirmation", "Are you sure you want to delete this customer? This will also delete all associated appointments!");
             if (confirmation == true) {
-                try {
-                    DBCustomer.deleteCustomer(currentCustomer.getCustomerID());
-                    DBAddress.deleteAddress(currentCustomer.getAddressID());
-                    Customer.customers.remove(currentCustomer);
+                int size = Appointment.appointments.size() - 1;
+                for (int i = size ; i > -1; i--) {
+                    Appointment a = Appointment.appointments.get(i);
+                    if (a.getCustomer().getCustomerID() == currentCustomer.getCustomerID()) {
+                        DBAppointment.deleteAppointment(a.getAppointmentId());
+                        Appointment.appointments.remove(a);
+                    }
                 }
-                catch (SQLIntegrityConstraintViolationException e) {
-                    Alerts.generateInfoAlert("Existing Appointments", "This customer cannot be deleted while they have existing appointments.");
-                }
+                DBCustomer.deleteCustomer(currentCustomer.getCustomerID());
+                DBAddress.deleteAddress(currentCustomer.getAddressID());
+                Customer.customers.remove(currentCustomer);
             }
         }
     }
