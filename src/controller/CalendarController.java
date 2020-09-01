@@ -40,7 +40,6 @@ public class CalendarController implements Initializable {
     //this Lambda expression creates a filtered list of appointments for the current this week of the year
     FilteredList<Appointment> weekAppointments = new FilteredList<>(userAppointments, e -> e.getStart().get(WeekFields.of(Locale.getDefault()).weekOfYear()) == LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfYear()));
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         apptCmb.setItems(userCurrAppointments);

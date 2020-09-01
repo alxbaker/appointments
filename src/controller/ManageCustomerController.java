@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import model.City;
 import model.Customer;
 import model.User;
+import util.Alerts;
 import util.Scenes;
 
 import java.io.IOException;
@@ -90,45 +91,43 @@ public class ManageCustomerController implements Initializable {
 
     @FXML
     void saveEvent(ActionEvent event) throws SQLException, IOException {
-        if (currentMode == "Add") {
+        try {
             String customerName = customerTxt.getText();
             String lineOne = lineOneTxt.getText();
             String lineTwo = lineTwoTxt.getText();
+            String userName= currentUser.getUserName();
             int cityId = cityCmb.getValue().getCityID();
             String postalCode = postalCodeTxt.getText();
             String phone = phoneTxt.getText();
 
-            String userName= currentUser.getUserName();
-            int addressId = DBAddress.insertAddress(lineOne, lineTwo, cityId, postalCode, phone, userName);
-            int customerId = DBCustomer.insertCustomer(customerName, addressId, userName);
-            new Customer(customerId, customerName, addressId,lineOne, lineTwo, postalCode, phone, City.getCity(cityId));
-            new Scenes().setScene(event, "/view/Customer.fxml");
+            if(customerName.isEmpty() || lineOne.isEmpty() || lineTwo.isEmpty() || postalCode.isEmpty() || phone.isEmpty()) {
+                Alerts.generateInfoAlert("Required Field", "A required field is blank");
+            }
+            else {
+                if (currentMode == "Add") {
+                    int addressId = DBAddress.insertAddress(lineOne, lineTwo, cityId, postalCode, phone, userName);
+                    int customerId = DBCustomer.insertCustomer(customerName, addressId, userName);
+                    new Customer(customerId, customerName, addressId,lineOne, lineTwo, postalCode, phone, City.getCity(cityId));
+                    new Scenes().setScene(event, "/view/Customer.fxml");
+                }
+                else if (currentMode == "Update") {
+                    currentCustomer.setCustomerName(customerName);
+                    currentCustomer.setAddress(lineOne);
+                    currentCustomer.setAddress2(lineTwo);
+                    currentCustomer.setCity(cityCmb.getValue());
+                    currentCustomer.setPostalCode(postalCode);
+                    currentCustomer.setPhone(phone);
+
+                    DBAddress.updateAddress(currentCustomer.getAddressID(), lineOne, lineTwo, cityId, postalCode, phone, userName);
+                    DBCustomer.updateCustomer(customerName, "admin", currentCustomer.getCustomerID());
+                    new Scenes().setScene(event, "/view/Customer.fxml");
+                }
+
+            }
+
         }
-        else if (currentMode == "Update") {
-            String customerName = customerTxt.getText();
-            currentCustomer.setCustomerName(customerName);
-
-            String lineOne = lineOneTxt.getText();
-            currentCustomer.setAddress(lineOne);
-
-            String lineTwo = lineTwoTxt.getText();
-            currentCustomer.setAddress2(lineTwo);
-
-            int cityId = cityCmb.getValue().getCityID();
-            currentCustomer.setCity(cityCmb.getValue());
-
-            String postalCode = postalCodeTxt.getText();
-            currentCustomer.setPostalCode(postalCode);
-
-            String phone = phoneTxt.getText();
-            currentCustomer.setPhone(phone);
-
-            String userName= currentUser.getUserName();
-            DBAddress.updateAddress(currentCustomer.getAddressID(), lineOne, lineTwo, cityId, postalCode, phone, userName);
-            DBCustomer.updateCustomer(customerName, "admin", currentCustomer.getCustomerID());
-            new Scenes().setScene(event, "/view/Customer.fxml");
+        catch(NullPointerException e) {
+            Alerts.generateInfoAlert("City Required", "Please select a city");
         }
-
-
     }
 }
