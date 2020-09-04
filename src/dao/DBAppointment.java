@@ -1,8 +1,6 @@
 package dao;
 
-import controller.CustomerController;
 import model.Appointment;
-import model.City;
 import model.Customer;
 import model.User;
 
@@ -12,15 +10,18 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class DBAppointment {
+    //SQL statements
     private final static String selectStatement = "SELECT * FROM appointment;";
-    private final static String countStatement = "SELECT COUNT(*) FROM appointment WHERE (start > NOW());";
     private static String insertStatement = "INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
             "VALUES (?, ?, ?, 'a scheduled appointment', 'location not provided', 'contact not provided', ?, 'url not provided', ?, ?, CURDATE(), ?, CURDATE(), ?);";
     private static  String deleteStatement = "DELETE FROM appointment WHERE appointmentId = ?";
     private static String updateStatement = "UPDATE appointment SET customerId = ?, title =?, type = ?, start = ?, end = ?, lastUpdate = CURDATE(), lastUpdateBy = ? WHERE appointmentId = ?";
+
+    //Database connection
     private final static Connection conn = DBConnection.getConnection();
 
-    public static void getAllAppointments() throws SQLException {
+    //method to get all appointments
+    public static void getAllAppointments() {
         try {
             PreparedStatement statement = conn.prepareStatement(selectStatement);
             statement.execute();
@@ -35,10 +36,9 @@ public class DBAppointment {
                 Timestamp start = rs.getTimestamp("start");
                 Timestamp end = rs.getTimestamp("end");
                 User u = User.getUser(userId);
-                String userName = u.getUserName();
                 Customer c = Customer.getCustomer(customerId);
-                String customerName = c.getCustomerName();
 
+                //convert to local system time
                 LocalDateTime ldtStart = start.toLocalDateTime();
                 ZonedDateTime zdtStart = ldtStart.atZone(ZoneId.of(ZoneId.systemDefault().toString()));
                 LocalDateTime localStart = zdtStart.toLocalDateTime();
@@ -47,6 +47,7 @@ public class DBAppointment {
                 ZonedDateTime zdtEnd = ldtEnd.atZone(ZoneId.of(ZoneId.systemDefault().toString()));
                 LocalDateTime localEnd = zdtEnd.toLocalDateTime();
 
+                //create new appointments
                 new Appointment(appointmentId,title,type,localStart,localEnd,c,u);
 
             }
@@ -57,6 +58,7 @@ public class DBAppointment {
         }
     }
 
+    //method to insert a new appointment, returns id
     public static int insertAppointment(Customer customer, String title, String type, Timestamp start,Timestamp end) throws SQLException {
         PreparedStatement statement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
         User u = User.getCurrentUser();
@@ -81,12 +83,14 @@ public class DBAppointment {
         }
     }
 
+    //method to delete an appointment
     public static void deleteAppointment(int appointmentId) throws SQLException {
         PreparedStatement statement = conn.prepareStatement(deleteStatement);
         statement.setInt(1, appointmentId);
         statement.execute();
     }
 
+    //method to update an existing appointment
     public static void updateAppointment(int appointmentId, Customer customer, String title, String type, Timestamp start, Timestamp end) throws SQLException {
         PreparedStatement statement = conn.prepareStatement(updateStatement);
         User u = User.getCurrentUser();

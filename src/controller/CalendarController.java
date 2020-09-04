@@ -1,10 +1,6 @@
 package controller;
 
-import dao.DBAddress;
 import dao.DBAppointment;
-import dao.DBCustomer;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,27 +8,22 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Appointment;
-import model.Customer;
 import model.User;
 import util.Alerts;
 import util.Scenes;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class CalendarController implements Initializable {
     //this Lambda expression creates a filtered list of appointments for the logged in user
-    FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.appointments, e -> e.getUser() == User.getCurrentUser());
-
-    //this Lambda expresses creates a filtered list of appoints for the logged in user on or after today.
-    FilteredList<Appointment> userCurrAppointments = new FilteredList<>(userAppointments, e -> ((e.getStart().toLocalDate().isAfter(LocalDate.now())) || (e.getStart().toLocalDate().isEqual(LocalDate.now()))));
+    FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.getAppointments(), e -> e.getUser() == User.getCurrentUser());
 
     //this Lambda expression creates a filtered list of appointments for the current user in the current month
     FilteredList<Appointment> monthAppointments = new FilteredList<>(userAppointments, e -> e.getStart().getMonth() == LocalDate.now().getMonth());
@@ -40,10 +31,11 @@ public class CalendarController implements Initializable {
     //this Lambda expression creates a filtered list of appointments for the current this week of the year
     FilteredList<Appointment> weekAppointments = new FilteredList<>(userAppointments, e -> e.getStart().get(WeekFields.of(Locale.getDefault()).weekOfYear()) == LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfYear()));
 
+    //set all tables, columns and combo boxes with values
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        apptCmb.setItems(userCurrAppointments);
-        allTbl.setItems(userCurrAppointments);
+        apptCmb.setItems(userAppointments);
+        allTbl.setItems(userAppointments);
         allConsultantClm.setCellValueFactory(new PropertyValueFactory<>("userName"));
         allTitleClm.setCellValueFactory(new PropertyValueFactory<>("title"));
         allTypeClm.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -69,122 +61,114 @@ public class CalendarController implements Initializable {
     }
 
     @FXML
-    private TabPane tabPane;
-
-    @FXML
-    private Tab allTab;
-
-    @FXML
     private TableView<Appointment> allTbl;
 
     @FXML
-    private TableColumn<?, ?> allConsultantClm;
+    private TableColumn<Appointment, String> allConsultantClm;
 
     @FXML
-    private TableColumn<?, ?> allTitleClm;
+    private TableColumn<Appointment, String> allTitleClm;
 
     @FXML
-    private TableColumn<?, ?> allTypeClm;
+    private TableColumn<Appointment, String> allTypeClm;
 
     @FXML
-    private TableColumn<?, ?> allCustomerClm;
+    private TableColumn<Appointment, String> allCustomerClm;
 
     @FXML
-    private TableColumn<?, ?> allStartClm;
+    private TableColumn<Appointment, LocalDateTime> allStartClm;
 
     @FXML
-    private TableColumn<?, ?> allEndClm;
-
-    @FXML
-    private Tab monthTab;
+    private TableColumn<Appointment, LocalDateTime> allEndClm;
 
     @FXML
     private TableView<Appointment> monthTbl;
 
     @FXML
-    private TableColumn<?, ?> monthConsultantClm;
+    private TableColumn<Appointment, String> monthConsultantClm;
 
     @FXML
-    private TableColumn<?, ?> monthTitleClm;
+    private TableColumn<Appointment, String> monthTitleClm;
 
     @FXML
-    private TableColumn<?, ?> monthTypeClm;
+    private TableColumn<Appointment, String> monthTypeClm;
 
     @FXML
-    private TableColumn<?, ?> monthCustomerClm;
+    private TableColumn<Appointment, String> monthCustomerClm;
 
     @FXML
-    private TableColumn<?, ?> monthStartClm;
+    private TableColumn<Appointment, LocalDateTime> monthStartClm;
 
     @FXML
-    private TableColumn<?, ?> monthEndClm;
-
-    @FXML
-    private Tab weekTab;
+    private TableColumn<Appointment, LocalDateTime> monthEndClm;
 
     @FXML
     private TableView<Appointment> weekTbl;
 
     @FXML
-    private TableColumn<?, ?> weekConsultantClm;
+    private TableColumn<Appointment, String> weekConsultantClm;
 
     @FXML
-    private TableColumn<?, ?> weekTitleClm;
+    private TableColumn<Appointment, String> weekTitleClm;
 
     @FXML
-    private TableColumn<?, ?> weekTypeClm;
+    private TableColumn<Appointment, String> weekTypeClm;
 
     @FXML
-    private TableColumn<?, ?> weekCustomerClm;
+    private TableColumn<Appointment, String> weekCustomerClm;
 
     @FXML
-    private TableColumn<?, ?> weekStartclm;
+    private TableColumn<Appointment, LocalDateTime> weekStartclm;
 
     @FXML
-    private TableColumn<?, ?> weekEndClm;
+    private TableColumn<Appointment, LocalDateTime> weekEndClm;
 
     @FXML
     private ComboBox<Appointment> apptCmb;
 
+    //go to the manage appointment screen
     @FXML
     void addAptEvent(ActionEvent event) throws IOException {
+        //set the mode for the manager appointment screen
         ManageAppointmentController.setCurrentMode("Add");
         new Scenes().setScene(event, "/view/ManageAppointment.fxml");
     }
 
-    @FXML
-    void apptCmbEvent(ActionEvent event) throws IOException {
-
-    }
-
+    //go back to the main screen
     @FXML
     void backEvent(ActionEvent event) throws IOException {
         new Scenes().setScene(event, "/view/Main.fxml");
     }
 
     @FXML
-    void delAptEvent(ActionEvent event) throws IOException, SQLException {
+    void delAptEvent(ActionEvent event) throws SQLException {
         Appointment currentAppointment = apptCmb.getValue();
+        //validate user has selected an appointment
         if (currentAppointment == null) {
             Alerts.generateInfoAlert("No Selection", "Please select an appointment.");
         }
+        //confirm user would like to delete appointment
         else {
             boolean confirmation = Alerts.generateConfAlert("Delete Appointment Confirmation", "Are you sure you want to delete this appointment?");
-            if (confirmation == true) {
+            if (confirmation) {
                 DBAppointment.deleteAppointment(currentAppointment.getAppointmentId());
-                Appointment.appointments.remove(currentAppointment);
+                Appointment.removeAppointment(currentAppointment);
             }
         }
     }
 
+    //go to manage appointment screen
     @FXML
     void updateAptEvent(ActionEvent event) throws IOException {
         Appointment currAppointment = apptCmb.getValue();
+        //validate user has selected an appointment
         if (currAppointment == null) {
             Alerts.generateInfoAlert("No Selection", "Please select an appointment");
         }
         else {
+            //set the mode for the manage appointment controller to update
             ManageAppointmentController.setCurrentMode("Update");
+            //pass the current appointment to the next controller
             ManageAppointmentController.setCurrAppointment(currAppointment);
             new Scenes().setScene(event, "/view/ManageAppointment.fxml");
         }

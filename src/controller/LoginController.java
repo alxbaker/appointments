@@ -25,22 +25,15 @@ import java.util.ResourceBundle;
 public class LoginController implements Initializable {
     String errorTitle, errorMsg;
 
-    public String getErrorTitle() {
-        return errorTitle;
-    }
-
     public void setErrorTitle(String errorTitle) {
         this.errorTitle = errorTitle;
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
     }
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
     }
 
+    //set text values using resource bundle
     @Override
     public void initialize (URL url, ResourceBundle rb) {
         usernameTxt.setPromptText(rb.getString("userprompt"));
@@ -74,20 +67,29 @@ public class LoginController implements Initializable {
 
     @FXML
     void loginEvent(ActionEvent event) throws IOException, SQLException {
+        //get all users
         DBUser.getAllUsers();
+
         String username = usernameTxt.getText();
         String password = passwordTxt.getText();
 
-        if (DBUser.authenticateUser(username, password) == true) {
+        if (DBUser.authenticateUser(username, password)) {
+            //add entry to the log file
             Files.updateLog(User.getCurrentUser());
+            //get all cities
             DBCities.getAllCities();
+            //get all customers
             DBCustomer.getAllCustomers();
+            //get all appointments
             DBAppointment.getAllAppointments();
+            //generate a time alert if appropriate
             Time.timeAlert();
 
+            //switch to main screen
             new Scenes().setScene(event, "/view/Main.fxml");
         }
         else {
+            //if user cannot authenticate, display error message
             Alerts.generateInfoAlert(errorTitle, errorMsg);
         }
     }

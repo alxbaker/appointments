@@ -1,11 +1,12 @@
 package dao;
 
+import util.Alerts;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-    //variables
     private static Connection conn = null;
 
     //JDBC URL Parts
@@ -20,32 +21,31 @@ public class DBConnection {
     private static final String username = "U05xDJ";
     private static final String password = "53688636444";
 
+    //method to open a connection
     public static Connection openConnection() {
         try {
-            conn = (Connection) DriverManager.getConnection(jdbcURL, username, password);
-            System.out.println("Connection successful");
+            conn = DriverManager.getConnection(jdbcURL, username, password);
         }
         catch(Exception e) {
-            System.out.println("Connection refused.");
-            System.out.println("ERROR: " + e.getMessage());
             e.printStackTrace();
+            Alerts.generateInfoAlert("Connection Error", "Connection to the database could not be established.");
         }
         return conn;
     }
 
+    //method to retrieve current connection
     public static Connection getConnection() {
         return conn;
     }
 
+    //method to close a connection
     public static void closeConnection() {
         try {
             conn.close();
-            System.out.print("Connection closed");
         }
         catch (SQLException e){
-            System.out.println("Connection could not be closed gracefully");
-            System.out.println ("ERROR: " + e.getMessage());
             e.printStackTrace();
+            Alerts.generateInfoAlert("Connection Error", "Connection could not be closed gracefully");
         }
     }
 }

@@ -20,9 +20,9 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <TabPane fx:id="tabPane" prefHeight="344.0" prefWidth="998.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TabPane prefHeight="344.0" prefWidth="998.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <tabs>
-                                <Tab fx:id="allTab" text="All Appointments">
+                                <Tab text="All Appointments">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
@@ -40,7 +40,7 @@
                                         </AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab fx:id="monthTab" text="Appointments by Month">
+                                <Tab text="Appointments by Month">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
@@ -58,7 +58,7 @@
                                         </AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab fx:id="weekTab" text="Appointments By Week">
+                                <Tab text="Appointments By Week">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
@@ -94,7 +94,7 @@
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </HBox.margin>
                                         </Label>
-                                        <ComboBox fx:id="apptCmb" onAction="#apptCmbEvent" prefWidth="400.0">
+                                        <ComboBox fx:id="apptCmb" prefWidth="400.0">
                                             <HBox.margin>
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </HBox.margin>

@@ -20,30 +20,28 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ManageCustomerController implements Initializable {
+    //flag to control add / update functionality
     private static String currentMode;
+
+    //method to pass get current customer from customer controller
     private static Customer currentCustomer;
+
+    //reference to current user
     private static User currentUser = User.getCurrentUser();
 
-    public Customer getCurrentCustomer() {
-        return currentCustomer;
-    }
-
+    //method to set current customer and mode from customer controller
     public static void setCurrentCustomer(Customer customer) {
         currentCustomer = customer;
     }
-
-    public String getMode() {
-        return currentMode;
-    }
-
     public static void setMode(String mode) {
         currentMode = mode;
     }
 
     @Override
     public void initialize (URL url, ResourceBundle rb) {
-        if (currentMode == "Add") {
-            actionLbl.setText(currentMode);
+        //if add, set prompt text
+        if (currentMode.equals("Add")) {
+            modeLbl.setText(currentMode);
             cityCmb.setItems(City.cities);
 
             lineOneTxt.setPromptText("Enter address line one");
@@ -52,8 +50,9 @@ public class ManageCustomerController implements Initializable {
             postalCodeTxt.setPromptText("Enter postal code");
             phoneTxt.setPromptText("Enter phone number");
         }
-        else if (currentMode == "Update") {
-            actionLbl.setText(currentMode);
+        //if update, set current values
+        else if (currentMode.equals("Update")) {
+            modeLbl.setText(currentMode);
             cityCmb.setValue(currentCustomer.getCity());
             customerTxt.setText(currentCustomer.getCustomerName());
             lineOneTxt.setText(currentCustomer.getAddress());
@@ -64,7 +63,7 @@ public class ManageCustomerController implements Initializable {
     }
 
     @FXML
-    private Label actionLbl;
+    private Label modeLbl;
 
     @FXML
     private TextField customerTxt;
@@ -84,6 +83,7 @@ public class ManageCustomerController implements Initializable {
     @FXML
     private TextField phoneTxt;
 
+    //go back to customer screen
     @FXML
     void backEvent(ActionEvent event) throws IOException {
         new Scenes().setScene(event, "/view/Customer.fxml");
@@ -100,17 +100,21 @@ public class ManageCustomerController implements Initializable {
             String postalCode = postalCodeTxt.getText();
             String phone = phoneTxt.getText();
 
+            //validate required fields are populated
             if(customerName.isEmpty() || lineOne.isEmpty() || lineTwo.isEmpty() || postalCode.isEmpty() || phone.isEmpty()) {
                 Alerts.generateInfoAlert("Required Field", "A required field is blank");
             }
             else {
-                if (currentMode == "Add") {
+                //if add, insert a  new address and customer
+                if (currentMode.equals("Add")) {
                     int addressId = DBAddress.insertAddress(lineOne, lineTwo, cityId, postalCode, phone, userName);
                     int customerId = DBCustomer.insertCustomer(customerName, addressId, userName);
                     new Customer(customerId, customerName, addressId,lineOne, lineTwo, postalCode, phone, City.getCity(cityId));
                     new Scenes().setScene(event, "/view/Customer.fxml");
                 }
-                else if (currentMode == "Update") {
+
+                //if update, update address and customer
+                else if (currentMode.equals("Update")) {
                     currentCustomer.setCustomerName(customerName);
                     currentCustomer.setAddress(lineOne);
                     currentCustomer.setAddress2(lineTwo);
@@ -126,6 +130,8 @@ public class ManageCustomerController implements Initializable {
             }
 
         }
+
+        //validate city is populated
         catch(NullPointerException e) {
             Alerts.generateInfoAlert("City Required", "Please select a city");
         }

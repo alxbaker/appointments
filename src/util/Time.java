@@ -1,27 +1,16 @@
 package util;
 
-import controller.CalendarController;
-import javafx.collections.transformation.FilteredList;
 import model.Appointment;
-import model.User;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 public class Time {
 
-    //this Lambda expression creates a filtered list of appointments for the logged in user
-    FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.appointments, e -> e.getUser() == User.getCurrentUser());
-
-    //this Lambda expresses creates a filtered list of appoints for the logged in user on or after today.
-    FilteredList<Appointment> userCurrAppointments = new FilteredList<>(userAppointments, e -> ((e.getStart().toLocalDate().isAfter(LocalDate.now())) || (e.getStart().toLocalDate().isEqual(LocalDate.now()))));
-
-
+    //method to generate alert if appointment is withint 5 minutes of user log in
     public static void timeAlert() {
         LocalTime currentTime = LocalTime.now();
-        for (Appointment a : Appointment.todayAppts) {
+        for (Appointment a : Appointment.getTodayAppointments()) {
             LocalTime startTime = a.getStart().toLocalTime();
 
             long timeDifference = ChronoUnit.MINUTES.between(currentTime, startTime);

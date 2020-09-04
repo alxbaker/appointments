@@ -6,6 +6,7 @@ import javafx.scene.control.ButtonType;
 import java.util.Optional;
 
 public class Alerts {
+    //method to generate informational/validation messages
     public static void generateInfoAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -13,6 +14,7 @@ public class Alerts {
         alert.showAndWait();
     }
 
+    //method to confirm user actions
     public static boolean generateConfAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);

@@ -14,7 +14,7 @@
    <children>
       <HBox alignment="CENTER" prefHeight="139.0" prefWidth="400.0">
          <children>
-            <Label id="modeLbl" fx:id="modeLbl" text="REPLACE">
+            <Label fx:id="modeLbl" text="REPLACE">
                <font>
                   <Font size="24.0" />
                </font>

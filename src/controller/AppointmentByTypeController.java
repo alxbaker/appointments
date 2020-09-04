@@ -15,15 +15,15 @@ import java.util.ResourceBundle;
 
 public class AppointmentByTypeController implements Initializable {
     //this Lambda expression creates a filtered list of appointments in the current month
-    FilteredList<Appointment> monthAppointments = new FilteredList<>(Appointment.appointments, e -> e.getStart().getMonth() == LocalDate.now().getMonth());
+    FilteredList<Appointment> monthAppointments = new FilteredList<>(Appointment.getAppointments(), e -> e.getStart().getMonth() == LocalDate.now().getMonth());
 
-    private int virtualCount = 0;
-    private int onsiteCount = 0;
-    private int miscCount = 0;
+    //variables to display counts of different appointment types this month
+    private int virtualCount;
+    private int onsiteCount;
+    private int miscCount;
 
-    public int getVirtualCount() {
-        return virtualCount;
-    }
+    //getters and setts for appointment type counters
+    public int getVirtualCount() { return virtualCount; }
 
     public void setVirtualCount(int virtualCount) {
         this.virtualCount = virtualCount;
@@ -45,32 +45,40 @@ public class AppointmentByTypeController implements Initializable {
         this.miscCount = miscCount;
     }
 
+    //initialize method sets all counts to 0
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setVirtualCount(0);
+        setOnsiteCount(0);
+        setMiscCount(0);
+
+        //loop through all appointments this month
         for (Appointment a : monthAppointments) {
             if (a.getType().equals("Virtual")){
-                setVirtualCount(virtualCount =+ 1);
+                //if virtual, add 1
+                setVirtualCount(virtualCount += 1);
             }
             else if (a.getType().equals("Onsite")) {
-                setOnsiteCount(onsiteCount =+ 1);
+                //if onsite, add 1
+                setOnsiteCount(onsiteCount += 1);
             }
             else {
-                setMiscCount(miscCount =+ 1);
+                //otherwise, add 1 to misc
+                setMiscCount(miscCount += 1);
             }
         }
 
-        appointmentsLbl.setText("Virtual:  " + virtualCount + " Onsite:  " + onsiteCount +  " Misc:  " + miscCount);
+        //display total appointment counts on the screen
+        appointmentsLbl.setText("Virtual:  " + getVirtualCount() + " Onsite:  " + getOnsiteCount() +  " Misc:  " + getMiscCount());
 
     }
 
     @FXML
     private Label appointmentsLbl;
 
+    //go back to the report screen
     @FXML
     void backBttn(ActionEvent event) throws IOException {
-        setMiscCount(0);
-        setOnsiteCount(0);
-        setVirtualCount(0);
         new Scenes().setScene(event, "/view/Report.fxml");
     }
 }

@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class User {
+    //an ObservableList for all users
     public static ObservableList<User> users = FXCollections.observableArrayList();
     int userId;
     String userName;
@@ -16,6 +17,7 @@ public class User {
         users.add(this);
     }
 
+    //method to return a user associated with a specific user id
     public static User getUser(int id) {
         for (User u : users) {
             if (u.getUserId() == id) {
@@ -25,6 +27,7 @@ public class User {
         return null;
     }
 
+    //method to clear users ObservableList
     public static void clearUsers(){
         users.clear();
     }
@@ -41,16 +44,8 @@ public class User {
         return userId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     public String getUserName() {
         return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     @Override

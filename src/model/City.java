@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class City {
+    //an ObservableList for all cities
     public static ObservableList<City> cities = FXCollections.observableArrayList();
     private String cityName;
     private int cityID;
@@ -14,6 +15,7 @@ public class City {
         cities.add(this);
     }
 
+    //method to return a city based on city ID
     public static City getCity(int id) {
         for (City city : cities) {
             if (city.getCityID() == id) {
@@ -25,18 +27,6 @@ public class City {
 
     public int getCityID() {
         return cityID;
-    }
-
-    public void setCityID(int cityID) {
-        this.cityID = cityID;
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
     }
 
     @Override

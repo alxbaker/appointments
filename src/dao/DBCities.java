@@ -8,26 +8,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBCities {
+    //SQL statement
     private final static String selectStatement = "SELECT * FROM city";
+
+    //Database connection
     private final static Connection conn = DBConnection.getConnection();
 
-    public static void getAllCities() throws SQLException {
-        try {
-            PreparedStatement statement = conn.prepareStatement(selectStatement);
-            statement.execute();
-            ResultSet rs = statement.getResultSet();
+    //method to return all cities
+    public static void getAllCities() throws SQLException{
+        PreparedStatement statement = conn.prepareStatement(selectStatement);
+        statement.execute();
+        ResultSet rs = statement.getResultSet();
 
-            while (rs.next()) {
-                //get address information
-                int cityId = rs.getInt("cityId");
-                String cityName = rs.getString("city");
-                City city = new City(cityId, cityName);
+        while (rs.next()) {
+            int cityId = rs.getInt("cityId");
+            String cityName = rs.getString("city");
+            new City(cityId, cityName);
 
-            }
-        } catch (SQLException e) {
-            System.out.println("SQL Exception");
-            System.out.println("ERROR: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 

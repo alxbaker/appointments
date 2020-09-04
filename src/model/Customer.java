@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Customer {
+    //an ObservableList for all customers
     public static ObservableList<Customer> customers = FXCollections.observableArrayList();
     private int customerId;
     private String customerName;
@@ -23,9 +24,11 @@ public class Customer {
         this.postalCode = postalCode;
         this.phone = phone;
         this.city = city;
+        //add customers to ObservableList when they are created
         customers.add(this);
     }
 
+    //method to return customer object based on customer id
     public static Customer getCustomer(int id) {
         for (Customer c : customers) {
             if (c.getCustomerID() == id) {
@@ -35,16 +38,13 @@ public class Customer {
         return null;
     }
 
+    //method to clear customer ObservableList
     public static void clearCustomers() {
         customers.clear();
     }
 
     public int getCustomerID() {
         return customerId;
-    }
-
-    public void setCustomerID(int customerID) {
-        this.customerId = customerID;
     }
 
     public String getCustomerName() {
@@ -57,10 +57,6 @@ public class Customer {
 
     public int getAddressID() {
         return addressID;
-    }
-
-    public void setAddressID(int addressID) {
-        this.addressID = addressID;
     }
 
     public String getAddress() {

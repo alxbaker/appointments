@@ -17,6 +17,11 @@
             </Label>
          </children>
       </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label text="Below are the appointment counts for this month" textAlignment="CENTER" />
+         </children>
+      </HBox>
       <HBox alignment="CENTER" prefHeight="311.0" prefWidth="600.0">
          <children>
             <Label fx:id="appointmentsLbl" text="Appointments">

@@ -21,41 +21,47 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.NumberFormat;
 import java.time.*;
 import java.util.ResourceBundle;
 
 public class ManageAppointmentController implements Initializable {
+    //an ObservableList to contain valid values for type
     ObservableList<String> type = FXCollections.observableArrayList();
 
     //this Lambda expression creates a filtered list of appointments for the logged in user
-    FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.appointments, e -> e.getUser() == User.getCurrentUser());
+    FilteredList<Appointment> userAppointments = new FilteredList<>(Appointment.getAppointments(), e -> e.getUser() == User.getCurrentUser());
 
     //this Lambda expresses creates a filtered list of appoints for the logged in user on or after today.
     FilteredList<Appointment> userCurrAppointments = new FilteredList<>(userAppointments, e -> ((e.getStart().toLocalDate().isAfter(LocalDate.now())) || (e.getStart().toLocalDate().isEqual(LocalDate.now()))));
 
+    //method to get current appointment from calendar controller
     private static Appointment currAppointment;
 
+    //mode to control differences between add/update functionality and UI
     private static String currentMode;
-    private static boolean load;
+
+    //flag to prevent scheduling overlapping appointments
+    private static boolean notOverlapping;
+
+    //ObservableList to contain valid values for hours and minutes
     ObservableList<String> hours = FXCollections.observableArrayList();
     ObservableList<String> minutes = FXCollections.observableArrayList();
 
-    public static String getCurrentMode() {
-        return currentMode;
-    }
-
+    //method to set current mode to add or update
     public static void setCurrentMode(String currentMode) {
         ManageAppointmentController.currentMode = currentMode;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //add valid values to type, hours and minutes
         type.addAll("Virtual", "Onsite");
         hours.addAll("08", "09", "10", "11",
                 "12", "13", "14", "15", "16", "17");
         minutes.addAll("00", "15", "30", "45");
-        if (currentMode == "Add") {
+
+        //if mode is add, set possible selections and prompt test
+        if (currentMode.equals("Add")) {
             modeLbl.setText(currentMode);
             title.setPromptText("Enter a title");
             customerSel.setItems(Customer.customers);
@@ -65,7 +71,9 @@ public class ManageAppointmentController implements Initializable {
             endHourSel.setItems(hours);
             endMinSel.setItems(minutes);
         }
-        else if (currentMode == "Update") {
+
+        // if mode is update, set current values
+        else if (currentMode.equals("Update")) {
             modeLbl.setText(currentMode);
             title.setText(currAppointment.getTitle());
             customerSel.setItems(Customer.customers);
@@ -124,14 +132,12 @@ public class ManageAppointmentController implements Initializable {
     @FXML
     private ComboBox<String> endMinSel;
 
-    public static Appointment getCurrAppointment() {
-        return currAppointment;
-    }
-
+    //method to set current appointment
     public static void setCurrAppointment(Appointment currAppointment) {
         ManageAppointmentController.currAppointment = currAppointment;
     }
 
+    //return to calendar screen
     @FXML
     void backEvent(ActionEvent event) throws IOException {
         new Scenes().setScene(event, "/view/Calendar.fxml");
@@ -139,7 +145,8 @@ public class ManageAppointmentController implements Initializable {
 
     @FXML
     void saveEvent(ActionEvent event) throws IOException, SQLException {
-        load = true;
+        //set notOverlapping equal to true
+        notOverlapping = true;
             try {
                 User u = User.getCurrentUser();
                 String apptTitle = title.getText();
@@ -162,24 +169,32 @@ public class ManageAppointmentController implements Initializable {
                 LocalDateTime ldtLocEnd = LocalDateTime.of(startDate, endTime);
                 Timestamp tsEnd = Timestamp.valueOf(ldtLocEnd);
 
+                //validate title and type are populated
                 if (apptTitle.isEmpty() || apptType.isEmpty()) {
                     Alerts.generateInfoAlert("Required Field", "The required title or type field is blank");
                 }
+
+                //validate appointment is not in the past
                 else if (ldtLocStart.isBefore(LocalDateTime.now())) {
                     Alerts.generateInfoAlert("Date Error", "You cannot schedule appointments in the past");
                 }
+
+                //validate start and end time are not equal
                 else if (startTime.equals(endTime) || endTime.equals(startTime)) {
                     Alerts.generateInfoAlert("Time Error", "Start and end time cannot be the same");
                 }
+
+                //validate start and end time are ordered correctly
                 else if (startTime.isAfter(endTime) || endTime.isBefore(startTime)) {
                     Alerts.generateInfoAlert("Time Error", "Start time must be before end time");
                 }
                 else {
-                    if (currentMode == "Add") {
+                    if (currentMode.equals("Add")) {
+                        //validate an appointment does not overlap
                         for (Appointment a : userCurrAppointments) {
                             if (a.getStart().toLocalDate().equals(startDate)
-                                    && (startTime.equals(a.getStart().toLocalDate())
-                                    || endTime.equals(a.getEnd().toLocalDate())
+                                    && (startTime.equals(a.getStart().toLocalTime())
+                                    || endTime.equals(a.getEnd().toLocalTime())
                                     || (startTime.isAfter(a.getStart().toLocalTime())
                                     && startTime.isBefore(a.getEnd().toLocalTime()))
                                     || (endTime.isAfter(a.getStart().toLocalTime())
@@ -188,22 +203,26 @@ public class ManageAppointmentController implements Initializable {
                                     && a.getStart().toLocalTime().isBefore(endTime))
                                     || (a.getEnd().toLocalTime().isAfter(startTime))
                                     && a.getEnd().toLocalTime().isBefore(endTime))) {
+                                //if the appointment overlaps, generate alert and set notOverlapping equal to false
                                 Alerts.generateInfoAlert("Overlap Error", "You cannot schedule overlapping appointments");
-                                load = false;
+                                notOverlapping = false;
+                                break;
                             }
                         }
-                        if (load == true) {
+                        if (notOverlapping) {
+                            //if appointment does not overlap, insert new appointment and return to calendar controller
                             int appointmentId = DBAppointment.insertAppointment(customer, apptTitle, apptType, tsStart, tsEnd);
                             new Appointment(appointmentId,apptTitle,apptType,ldtLocStart, ldtLocEnd, customer,u);
                             new Scenes().setScene(event, "/view/Calendar.fxml");
                         }
                     }
-                    else if (currentMode == "Update") {
+                    else if (currentMode.equals("Update")) {
                         for (Appointment a : userCurrAppointments) {
+                            //validate an appointment does not overlap
                             if (a.getAppointmentId() != currAppointment.getAppointmentId()
                                 && a.getStart().toLocalDate().equals(startDate)
-                                && (startTime.equals(a.getStart().toLocalDate())
-                                || endTime.equals(a.getEnd().toLocalDate())
+                                && (startTime.equals(a.getStart().toLocalTime())
+                                || endTime.equals(a.getEnd().toLocalTime())
                                 || (startTime.isAfter(a.getStart().toLocalTime())
                                 &&  startTime.isBefore(a.getEnd().toLocalTime()))
                                 || (endTime.isAfter(a.getStart().toLocalTime())
@@ -213,30 +232,35 @@ public class ManageAppointmentController implements Initializable {
                                 ||  (a.getEnd().toLocalTime().isAfter(startTime))
                                 &&  a.getEnd().toLocalTime().isBefore(endTime))) {
                                 Alerts.generateInfoAlert("Overlap Error", "You cannot schedule overlapping appointments");
-                                load = false;
+                                notOverlapping = false;
+                                break;
                             }
-                            if (load == true) {
-                                int apptId = currAppointment.getAppointmentId();
-                                currAppointment.setCustomer(customer);
-                                currAppointment.setTitle(apptTitle);
-                                currAppointment.setType(apptType);
-                                currAppointment.setStart(ldtLocStart);
-                                currAppointment.setEnd(ldtLocEnd);
-                                DBAppointment.updateAppointment(apptId,customer,apptTitle,apptType,tsStart,tsEnd);
-                                //TODO fix null pointer exception for primary stage
-                                new Scenes().setScene(event, "/view/Calendar.fxml");
-                            }
+                        }
+                        if (notOverlapping) {
+                            //if appointment does not overlap, update appointment and return to calendar controller
+                            int apptId = currAppointment.getAppointmentId();
+                            currAppointment.setCustomer(customer);
+                            currAppointment.setTitle(apptTitle);
+                            currAppointment.setType(apptType);
+                            currAppointment.setStart(ldtLocStart);
+                            currAppointment.setEnd(ldtLocEnd);
+                            DBAppointment.updateAppointment(apptId,customer,apptTitle,apptType,tsStart,tsEnd);
+                            new Scenes().setScene(event, "/view/Calendar.fxml");
                         }
                     }
                 }
 
             }
+            //alert on empty number field
             catch(NumberFormatException e){
                 Alerts.generateInfoAlert("Required Field", "A required time field is blank");
             }
+            //alert on empty customer field
             catch(NullPointerException e) {
-                Alerts.generateInfoAlert("Required Field", "The required customer or date field is blank");
+                Alerts.generateInfoAlert("Required Field", "The required customer, date, or type field is blank");
                 e.printStackTrace();
+                e.getCause();
+                e.getMessage();
             }
         }
     }
